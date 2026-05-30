@@ -1,0 +1,9 @@
+{
+  "appId": "com.sophie.unicornmatch",
+  "appName": "Unicorn Match",
+  "webDir": "www",
+  "backgroundColor": "#c4b5fdff",
+  "android": {
+    "allowMixedContent": false
+  }
+}

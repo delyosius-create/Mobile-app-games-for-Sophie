@@ -1,0 +1,19 @@
+{
+  "name": "unicorn-match",
+  "version": "1.0.0",
+  "private": true,
+  "description": "A magical unicorn & fairy-tale card matching game for two players.",
+  "scripts": {
+    "serve": "python3 -m http.server 8000 --directory www",
+    "add:android": "cap add android",
+    "sync": "cap sync android",
+    "build:apk": "cap sync android && cd android && ./gradlew assembleDebug"
+  },
+  "dependencies": {
+    "@capacitor/android": "^6.1.2",
+    "@capacitor/core": "^6.1.2"
+  },
+  "devDependencies": {
+    "@capacitor/cli": "^6.1.2"
+  }
+}
