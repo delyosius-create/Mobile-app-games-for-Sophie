@@ -106,8 +106,6 @@
       el.className = "card";
       el.setAttribute("aria-label", "Hidden card");
       el.dataset.idx = idx;
-      el.style.setProperty("--p1", card.design.c1);
-      el.style.setProperty("--p2", card.design.c2);
 
       const back = document.createElement("div");
       back.className = "face face-back";
