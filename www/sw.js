@@ -1,5 +1,5 @@
 /* Simple offline cache so the game works without internet. */
-const CACHE = "unicorn-match-v1";
+const CACHE = "unicorn-match-v2";
 const ASSETS = [
   "./",
   "./index.html",
