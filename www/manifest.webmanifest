@@ -1,11 +1,11 @@
 {
-  "name": "Unicorn Match — Fantasy Card Game",
-  "short_name": "Unicorn Match",
-  "description": "A magical unicorn & fairy-tale card matching game for two players.",
+  "name": "Match Magic — Card Matching Game",
+  "short_name": "Match Magic",
+  "description": "A two-player memory card-matching game with themes: fantasy, animals, trucks, nature and silly monsters.",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
-  "orientation": "portrait",
+  "orientation": "any",
   "background_color": "#c4b5fd",
   "theme_color": "#a78bfa",
   "icons": [

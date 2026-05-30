@@ -4,8 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0, user-scalable=no" />
   <meta name="theme-color" content="#a78bfa" />
-  <meta name="description" content="A magical unicorn & fairy-tale card matching game for two players." />
-  <title>✨ Unicorn Match ✨</title>
+  <meta name="description" content="A magical card matching game for two players, with unicorns, animals, trucks, nature and more." />
+  <title>✨ Match Magic ✨</title>
   <link rel="manifest" href="manifest.webmanifest" />
   <link rel="icon" href="icons/icon-192.png" />
   <link rel="apple-touch-icon" href="icons/icon-192.png" />
@@ -25,34 +25,46 @@
   <!-- ======================= START SCREEN ======================= -->
   <main id="start-screen" class="screen active">
     <div class="title-wrap">
-      <h1 class="title">🦄 Unicorn Match 🌈</h1>
-      <p class="subtitle">A magical card matching game for two players</p>
+      <h1 class="title">✨ Match Magic 🌈</h1>
+      <p class="subtitle">Pick a theme, find the pairs, beat your friend!</p>
     </div>
 
     <div class="card-panel">
       <div class="player-setup">
         <label class="field">
           <span class="field-label">💜 Player 1</span>
-          <input id="p1-name" type="text" maxlength="14" value="Princess 1" autocomplete="off" />
+          <input id="p1-name" type="text" maxlength="14" value="Player 1" autocomplete="off" />
         </label>
         <label class="field">
           <span class="field-label">💖 Player 2</span>
-          <input id="p2-name" type="text" maxlength="14" value="Princess 2" autocomplete="off" />
+          <input id="p2-name" type="text" maxlength="14" value="Player 2" autocomplete="off" />
         </label>
       </div>
 
-      <div class="difficulty">
-        <span class="field-label">Choose your magic level</span>
-        <div class="difficulty-options" role="radiogroup" aria-label="Difficulty">
-          <button class="diff-btn active" data-pairs="6"  role="radio" aria-checked="true">
+      <div class="setup-section">
+        <span class="field-label">Choose a theme</span>
+        <div id="theme-options" class="theme-options" role="radiogroup" aria-label="Theme"></div>
+      </div>
+
+      <div class="setup-section">
+        <span class="field-label">How many pairs?</span>
+        <div class="difficulty-options" role="radiogroup" aria-label="Quick size">
+          <button class="diff-btn active" data-pairs="6" role="radio" aria-checked="true">
             <span class="diff-emoji">🌸</span><span class="diff-name">Easy</span><span class="diff-detail">12 cards</span>
           </button>
-          <button class="diff-btn" data-pairs="8"  role="radio" aria-checked="false">
-            <span class="diff-emoji">🌟</span><span class="diff-name">Medium</span><span class="diff-detail">16 cards</span>
+          <button class="diff-btn" data-pairs="10" role="radio" aria-checked="false">
+            <span class="diff-emoji">🌟</span><span class="diff-name">Medium</span><span class="diff-detail">20 cards</span>
           </button>
-          <button class="diff-btn" data-pairs="12" role="radio" aria-checked="false">
-            <span class="diff-emoji">👑</span><span class="diff-name">Royal</span><span class="diff-detail">24 cards</span>
+          <button class="diff-btn" data-pairs="15" role="radio" aria-checked="false">
+            <span class="diff-emoji">👑</span><span class="diff-name">Royal</span><span class="diff-detail">30 cards</span>
           </button>
+        </div>
+        <div class="slider-row">
+          <input id="pairs-slider" type="range" min="2" max="18" step="1" value="6"
+                 aria-label="Number of pairs" />
+          <div class="slider-readout">
+            <span id="pairs-count">6</span> pairs · <span id="cards-count">12</span> cards
+          </div>
         </div>
       </div>
 
@@ -61,7 +73,7 @@
       <div class="how-to">
         <strong>How to play:</strong> Take turns flipping two cards. Find a matching
         pair to score a point and go again! If they don't match, it's the next
-        princess's turn. Whoever finds the most pairs wins! 👑
+        player's turn. Whoever finds the most pairs wins! 👑
       </div>
     </div>
     <button id="sound-toggle" class="sound-toggle" title="Sound on/off" aria-label="Toggle sound">🔊</button>
@@ -71,7 +83,7 @@
   <main id="game-screen" class="screen">
     <header class="scoreboard">
       <div id="score-p1" class="score-card p1 active">
-        <div class="score-name">Princess 1</div>
+        <div class="score-name">Player 1</div>
         <div class="score-value">0</div>
         <div class="score-label">pairs</div>
       </div>
@@ -81,7 +93,7 @@
         <div class="moves">Moves: <span id="moves-count">0</span></div>
       </div>
       <div id="score-p2" class="score-card p2">
-        <div class="score-name">Princess 2</div>
+        <div class="score-name">Player 2</div>
         <div class="score-value">0</div>
         <div class="score-label">pairs</div>
       </div>
@@ -99,14 +111,14 @@
   <div id="results-modal" class="modal-overlay">
     <div class="modal">
       <div class="modal-crown">👑</div>
-      <h2 id="result-title">Princess 1 Wins!</h2>
+      <h2 id="result-title">Player 1 Wins!</h2>
       <div class="result-scores">
         <div class="result-row">
-          <span id="res-p1-name" class="res-name">Princess 1</span>
+          <span id="res-p1-name" class="res-name">Player 1</span>
           <span id="res-p1-score" class="res-score">0</span>
         </div>
         <div class="result-row">
-          <span id="res-p2-name" class="res-name">Princess 2</span>
+          <span id="res-p2-name" class="res-name">Player 2</span>
           <span id="res-p2-score" class="res-score">0</span>
         </div>
         <div class="result-row total-row">
@@ -121,6 +133,9 @@
       </div>
     </div>
   </div>
+
+  <!-- big emoji "burst" shown in the centre of the screen on each match -->
+  <div id="match-burst" class="match-burst" aria-hidden="true"></div>
 
   <canvas id="confetti" class="confetti-canvas"></canvas>
 
