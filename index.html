@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0, user-scalable=no" />
+  <meta name="theme-color" content="#a78bfa" />
+  <meta name="description" content="A magical unicorn & fairy-tale card matching game for two players." />
+  <title>✨ Unicorn Match ✨</title>
+  <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="icon" href="icons/icon-192.png" />
+  <link rel="apple-touch-icon" href="icons/icon-192.png" />
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <div class="sky">
+    <span class="cloud cloud-1">☁️</span>
+    <span class="cloud cloud-2">☁️</span>
+    <span class="cloud cloud-3">☁️</span>
+    <span class="star-bg s1">⭐</span>
+    <span class="star-bg s2">✨</span>
+    <span class="star-bg s3">🌟</span>
+    <span class="star-bg s4">✨</span>
+  </div>
+
+  <!-- ======================= START SCREEN ======================= -->
+  <main id="start-screen" class="screen active">
+    <div class="title-wrap">
+      <h1 class="title">🦄 Unicorn Match 🌈</h1>
+      <p class="subtitle">A magical card matching game for two players</p>
+    </div>
+
+    <div class="card-panel">
+      <div class="player-setup">
+        <label class="field">
+          <span class="field-label">💜 Player 1</span>
+          <input id="p1-name" type="text" maxlength="14" value="Princess 1" autocomplete="off" />
+        </label>
+        <label class="field">
+          <span class="field-label">💖 Player 2</span>
+          <input id="p2-name" type="text" maxlength="14" value="Princess 2" autocomplete="off" />
+        </label>
+      </div>
+
+      <div class="difficulty">
+        <span class="field-label">Choose your magic level</span>
+        <div class="difficulty-options" role="radiogroup" aria-label="Difficulty">
+          <button class="diff-btn active" data-pairs="6"  role="radio" aria-checked="true">
+            <span class="diff-emoji">🌸</span><span class="diff-name">Easy</span><span class="diff-detail">12 cards</span>
+          </button>
+          <button class="diff-btn" data-pairs="8"  role="radio" aria-checked="false">
+            <span class="diff-emoji">🌟</span><span class="diff-name">Medium</span><span class="diff-detail">16 cards</span>
+          </button>
+          <button class="diff-btn" data-pairs="12" role="radio" aria-checked="false">
+            <span class="diff-emoji">👑</span><span class="diff-name">Royal</span><span class="diff-detail">24 cards</span>
+          </button>
+        </div>
+      </div>
+
+      <button id="start-btn" class="primary-btn">✨ Start Playing ✨</button>
+
+      <div class="how-to">
+        <strong>How to play:</strong> Take turns flipping two cards. Find a matching
+        pair to score a point and go again! If they don't match, it's the next
+        princess's turn. Whoever finds the most pairs wins! 👑
+      </div>
+    </div>
+    <button id="sound-toggle" class="sound-toggle" title="Sound on/off" aria-label="Toggle sound">🔊</button>
+  </main>
+
+  <!-- ======================= GAME SCREEN ======================= -->
+  <main id="game-screen" class="screen">
+    <header class="scoreboard">
+      <div id="score-p1" class="score-card p1 active">
+        <div class="score-name">Princess 1</div>
+        <div class="score-value">0</div>
+        <div class="score-label">pairs</div>
+      </div>
+      <div class="turn-indicator">
+        <div class="turn-emoji">🦄</div>
+        <div id="turn-text" class="turn-text">Your turn!</div>
+        <div class="moves">Moves: <span id="moves-count">0</span></div>
+      </div>
+      <div id="score-p2" class="score-card p2">
+        <div class="score-name">Princess 2</div>
+        <div class="score-value">0</div>
+        <div class="score-label">pairs</div>
+      </div>
+    </header>
+
+    <section id="board" class="board" aria-label="Game board"></section>
+
+    <footer class="game-controls">
+      <button id="restart-btn" class="ghost-btn">🔄 Restart</button>
+      <button id="quit-btn" class="ghost-btn">🏠 Menu</button>
+    </footer>
+  </main>
+
+  <!-- ======================= RESULTS MODAL ======================= -->
+  <div id="results-modal" class="modal-overlay">
+    <div class="modal">
+      <div class="modal-crown">👑</div>
+      <h2 id="result-title">Princess 1 Wins!</h2>
+      <div class="result-scores">
+        <div class="result-row">
+          <span id="res-p1-name" class="res-name">Princess 1</span>
+          <span id="res-p1-score" class="res-score">0</span>
+        </div>
+        <div class="result-row">
+          <span id="res-p2-name" class="res-name">Princess 2</span>
+          <span id="res-p2-score" class="res-score">0</span>
+        </div>
+        <div class="result-row total-row">
+          <span class="res-name">Total pairs found</span>
+          <span id="res-total" class="res-score">0</span>
+        </div>
+      </div>
+      <p id="result-flair" class="result-flair">A truly magical match! ✨</p>
+      <div class="modal-buttons">
+        <button id="play-again-btn" class="primary-btn">💖 Play Again</button>
+        <button id="menu-btn" class="ghost-btn">🏠 Main Menu</button>
+      </div>
+    </div>
+  </div>
+
+  <canvas id="confetti" class="confetti-canvas"></canvas>
+
+  <script src="js/game.js"></script>
+</body>
+</html>
