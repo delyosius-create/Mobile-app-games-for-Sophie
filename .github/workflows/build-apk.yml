@@ -64,12 +64,14 @@ jobs:
           if-no-files-found: error
 
       - name: Publish APK as a Release
-        if: github.event_name == 'workflow_dispatch'
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: apk-${{ github.run_number }}
-          name: Unicorn Match APK (build ${{ github.run_number }})
+          tag_name: latest-apk
+          name: 🦄 Unicorn Match — Download for Android
           body: |
-            📱 Download **UnicornMatch.apk** below, copy it to an Android phone,
-            and tap to install (you may need to allow "Install from unknown sources").
+            📱 **Tap `UnicornMatch.apk` below to download, then open it to install.**
+
+            On your phone you may need to allow "Install from unknown sources"
+            the first time. This is always the newest version of the game.
           files: UnicornMatch.apk
+          make_latest: true
