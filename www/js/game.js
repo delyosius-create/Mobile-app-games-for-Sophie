@@ -147,6 +147,93 @@
         { emoji: "🍭", name: "Lollipop",   sound: "pop" },
       ],
     },
+    {
+      id: "ocean", name: "Ocean", icon: "🐠",
+      cards: [
+        { emoji: "🐠", name: "Tropical Fish", sound: "splash" },
+        { emoji: "🐟", name: "Fish",        sound: "splash" },
+        { emoji: "🐡", name: "Pufferfish",  sound: "boing" },
+        { emoji: "🦈", name: "Shark",       sound: "growl" },
+        { emoji: "🐙", name: "Octopus",     sound: "splash" },
+        { emoji: "🦑", name: "Squid",       sound: "splash" },
+        { emoji: "🦐", name: "Shrimp",      sound: "pop" },
+        { emoji: "🦞", name: "Lobster",     sound: "pop" },
+        { emoji: "🦀", name: "Crab",        sound: "pop" },
+        { emoji: "🐚", name: "Seashell",    sound: "ding" },
+        { emoji: "🐬", name: "Dolphin",     sound: "chirp" },
+        { emoji: "🐳", name: "Whale",       sound: "splash" },
+        { emoji: "🐋", name: "Blue Whale",  sound: "splash" },
+        { emoji: "🐢", name: "Sea Turtle",  sound: "pop" },
+        { emoji: "🪼", name: "Jellyfish",   sound: "boing" },
+        { emoji: "🦭", name: "Seal",        sound: "woof" },
+        { emoji: "🦦", name: "Otter",       sound: "chirp" },
+        { emoji: "⚓", name: "Anchor",      sound: "ding" },
+        { emoji: "🏝️", name: "Island",      sound: "rustle" },
+        { emoji: "🌊", name: "Wave",        sound: "splash" },
+        { emoji: "🐊", name: "Crocodile",   sound: "growl" },
+        { emoji: "🪸", name: "Coral",       sound: "pop" },
+        { emoji: "🐧", name: "Penguin",     sound: "chirp" },
+        { emoji: "🦩", name: "Flamingo",    sound: "chirp" },
+      ],
+    },
+    {
+      id: "food", name: "Food & Sweets", icon: "🍩",
+      cards: [
+        { emoji: "🍩", name: "Donut",        sound: "pop" },
+        { emoji: "🍪", name: "Cookie",       sound: "pop" },
+        { emoji: "🧁", name: "Cupcake",      sound: "wish" },
+        { emoji: "🍰", name: "Cake Slice",   sound: "wish" },
+        { emoji: "🎂", name: "Birthday Cake", sound: "wish" },
+        { emoji: "🍦", name: "Ice Cream",    sound: "ding" },
+        { emoji: "🍧", name: "Shaved Ice",   sound: "ding" },
+        { emoji: "🍨", name: "Sundae",       sound: "ding" },
+        { emoji: "🍫", name: "Chocolate",    sound: "pop" },
+        { emoji: "🍬", name: "Candy",        sound: "ding" },
+        { emoji: "🍭", name: "Lollipop",     sound: "pop" },
+        { emoji: "🍮", name: "Custard",      sound: "pop" },
+        { emoji: "🍓", name: "Strawberry",   sound: "pop" },
+        { emoji: "🍎", name: "Apple",        sound: "pop" },
+        { emoji: "🍌", name: "Banana",       sound: "boing" },
+        { emoji: "🍉", name: "Watermelon",   sound: "pop" },
+        { emoji: "🍇", name: "Grapes",       sound: "pop" },
+        { emoji: "🍒", name: "Cherries",     sound: "pop" },
+        { emoji: "🍑", name: "Peach",        sound: "pop" },
+        { emoji: "🥨", name: "Pretzel",      sound: "pop" },
+        { emoji: "🥐", name: "Croissant",    sound: "pop" },
+        { emoji: "🍕", name: "Pizza",        sound: "pop" },
+        { emoji: "🍔", name: "Burger",       sound: "pop" },
+        { emoji: "🌭", name: "Hot Dog",      sound: "pop" },
+      ],
+    },
+    {
+      id: "space", name: "Space", icon: "🚀",
+      cards: [
+        { emoji: "🚀", name: "Rocket",       sound: "engine" },
+        { emoji: "🛸", name: "UFO",          sound: "robot" },
+        { emoji: "🪐", name: "Saturn",       sound: "magic" },
+        { emoji: "🌍", name: "Earth",        sound: "magic" },
+        { emoji: "🌙", name: "Moon",         sound: "magic" },
+        { emoji: "⭐", name: "Star",         sound: "ding" },
+        { emoji: "🌟", name: "Bright Star",  sound: "magic" },
+        { emoji: "☄️", name: "Comet",        sound: "zap" },
+        { emoji: "🌌", name: "Milky Way",    sound: "magic" },
+        { emoji: "🌠", name: "Shooting Star", sound: "wish" },
+        { emoji: "👽", name: "Alien",        sound: "robot" },
+        { emoji: "🛰️", name: "Satellite",    sound: "robot" },
+        { emoji: "🔭", name: "Telescope",    sound: "ding" },
+        { emoji: "🌞", name: "Sun",          sound: "magic" },
+        { emoji: "⚡", name: "Lightning",    sound: "zap" },
+        { emoji: "🌑", name: "New Moon",     sound: "magic" },
+        { emoji: "🌕", name: "Full Moon",    sound: "magic" },
+        { emoji: "👨‍🚀", name: "Astronaut",   sound: "robot" },
+        { emoji: "🌎", name: "Planet",       sound: "magic" },
+        { emoji: "🌛", name: "Crescent",     sound: "magic" },
+        { emoji: "🌀", name: "Galaxy",       sound: "zap" },
+        { emoji: "🪨", name: "Meteor",       sound: "pop" },
+        { emoji: "👾", name: "Invader",      sound: "boing" },
+        { emoji: "✨", name: "Sparkles",     sound: "magic" },
+      ],
+    },
   ];
 
   /* Bright gradient palette cycled across each deck's cards. */
@@ -255,6 +342,11 @@
   function playVoice(name) {
     if (!state.soundOn) return;
     try { (VOICES[name] || VOICES.default)(ctx().currentTime); } catch (_) { /* ignore */ }
+  }
+
+  /* Gentle haptic feedback on phones that support it. */
+  function buzz(pattern) {
+    try { if (navigator.vibrate) navigator.vibrate(pattern); } catch (_) { /* ignore */ }
   }
   const sfx = {
     flip: () => { if (state.soundOn) try { tone(520, ctx().currentTime, 0.12, { type: "triangle", peak: 0.12 }); } catch (_) {} },
@@ -410,6 +502,7 @@
         state.matchedCount++;
         playVoice(a.design.sound);     // sound that matches the emoji
         matchBurst(a.design.emoji);    // big burst animation
+        buzz(55);                      // little haptic celebration
         updateScoreboard();
         state.busy = false;
         if (state.matchedCount === state.pairs) endGame();
@@ -440,6 +533,7 @@
     state.matchedCount = 0;
     state.pairs = Math.max(2, Math.min(state.pairs, theme().cards.length));
     state.deck = buildDeck(state.pairs);
+    savePrefs();
 
     $(".turn-emoji").textContent = theme().icon;
     renderBoard();
@@ -470,6 +564,7 @@
       $("#result-flair").textContent = flair;
       $("#results-modal").classList.add("show");
       sfx.win();
+      buzz([0, 80, 50, 80, 50, 160]);
       launchConfetti();
     }, 650);
   }
@@ -547,6 +642,29 @@
     window.scrollTo(0, 0);
   }
 
+  /* ---------------------- Preferences (remembered) --------------- */
+  const PREFS_KEY = "matchmagic.prefs";
+  function savePrefs() {
+    try {
+      localStorage.setItem(PREFS_KEY, JSON.stringify({
+        theme: state.themeId,
+        pairs: state.pairs,
+        sound: state.soundOn,
+        p1: $("#p1-name").value,
+        p2: $("#p2-name").value,
+      }));
+    } catch (_) { /* ignore */ }
+  }
+  function loadPrefs() {
+    let p = {};
+    try { p = JSON.parse(localStorage.getItem(PREFS_KEY) || "{}"); } catch (_) { p = {}; }
+    if (p.theme && THEMES.some((t) => t.id === p.theme)) state.themeId = p.theme;
+    if (typeof p.sound === "boolean") state.soundOn = p.sound;
+    if (p.p1) $("#p1-name").value = p.p1;
+    if (p.p2) $("#p2-name").value = p.p2;
+    if (Number.isFinite(p.pairs)) state.pairs = p.pairs; // clamped later in setPairs
+  }
+
   /* ---------------------- Start-screen controls ------------------ */
   function updatePairReadout() {
     $("#pairs-count").textContent = state.pairs;
@@ -564,6 +682,7 @@
       b.setAttribute("aria-checked", on ? "true" : "false");
     });
     updatePairReadout();
+    savePrefs();
   }
 
   function buildThemePicker() {
@@ -596,6 +715,7 @@
 
   /* ---------------------- Wire up UI ----------------------------- */
   function init() {
+    loadPrefs();
     buildThemePicker();
 
     document.querySelectorAll(".diff-btn").forEach((btn) => {
@@ -605,6 +725,10 @@
     const slider = $("#pairs-slider");
     slider.max = theme().cards.length;
     slider.addEventListener("input", () => setPairs(parseInt(slider.value, 10), false));
+    setPairs(state.pairs, false); // clamp + sync slider/presets to saved size
+
+    $("#p1-name").addEventListener("change", savePrefs);
+    $("#p2-name").addEventListener("change", savePrefs);
 
     $("#start-btn").addEventListener("click", startGame);
     $("#restart-btn").addEventListener("click", startGame);
@@ -619,11 +743,14 @@
     });
 
     const soundBtn = $("#sound-toggle");
+    soundBtn.textContent = state.soundOn ? "🔊" : "🔇";
+    soundBtn.classList.toggle("muted", !state.soundOn);
     soundBtn.addEventListener("click", () => {
       state.soundOn = !state.soundOn;
       soundBtn.textContent = state.soundOn ? "🔊" : "🔇";
       soundBtn.classList.toggle("muted", !state.soundOn);
       if (state.soundOn) sfx.flip();
+      savePrefs();
     });
 
     window.addEventListener("resize", scheduleLayout);
