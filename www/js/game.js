@@ -169,7 +169,7 @@
         { emoji: "🦦", name: "Otter",       sound: "chirp" },
         { emoji: "⚓", name: "Anchor",      sound: "ding" },
         { emoji: "🏝️", name: "Island",      sound: "rustle" },
-        { emoji: "🌊", name: "Wave",        sound: "splash" },
+        { emoji: "🌊", name: "Wave",        sound: "waves" },
         { emoji: "🐊", name: "Crocodile",   sound: "growl" },
         { emoji: "🪸", name: "Coral",       sound: "pop" },
         { emoji: "🐧", name: "Penguin",     sound: "chirp" },
@@ -341,7 +341,34 @@
 
   function playVoice(name) {
     if (!state.soundOn) return;
+    if (CLIPS[name] && playClip(CLIPS[name])) return; // real recording when we have one
     try { (VOICES[name] || VOICES.default)(ctx().currentTime); } catch (_) { /* ignore */ }
+  }
+
+  /* Real recorded clips (CC0, from freesound.org via github.com/deltabrot/
+   * sound-effects) used in place of synth where a good recording exists.
+   * Anything without a clip falls back to the synth voice above. */
+  const CLIPS = {
+    woof:   "sounds/dog-bark.wav",
+    meow:   "sounds/cat-meow.wav",
+    moo:    "sounds/cow-moo.wav",
+    chirp:  "sounds/birds-chirping.wav",
+    splash: "sounds/water-drop.wav",
+    waves:  "sounds/wave-crash.wav",
+  };
+  const audioCache = {};
+  function playClip(url, opt) {
+    const { volume = 0.6, maxMs = 1500 } = opt || {};
+    try {
+      let a = audioCache[url];
+      if (!a) { a = new Audio(url); a.preload = "auto"; audioCache[url] = a; }
+      a.pause(); a.currentTime = 0; a.volume = volume;
+      const p = a.play();
+      if (p && p.catch) p.catch(() => {});
+      clearTimeout(a._stop);
+      a._stop = setTimeout(() => { try { a.pause(); } catch (_) {} }, maxMs);
+      return true;
+    } catch (_) { return false; }
   }
 
   /* Gentle haptic feedback on phones that support it. */
