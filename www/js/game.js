@@ -315,8 +315,14 @@
   /* Formant-shaped vocalisation — the key to natural-sounding animals.
    * Oscillator(s) with a pitch contour are run through parallel band-pass
    * "formant" filters (the resonances that make a voice sound like a voice).
-   * opts: { dur, peak, type, pitch:[[t,Hz]...], formants:[Hz...], q,
-   *         vibrato:{rate,depth}, tremolo:{rate,depth}, detune:[cents...] } */
+   * The big naturalness win is *moving* formants: a vowel that glides from
+   * one shape to another (ee->ow) is what makes a "meow" read as a word.
+   *
+   * opts: { dur, peak, type, attack, release,
+   *         pitch: [[t,Hz]...],
+   *         formants: [ Hz | [[t,Hz]...] , ...],   // static OR a trajectory
+   *         q, vibrato:{rate,depth}, tremolo:{rate,depth}, detune:[cents...],
+   *         breath:{at,dur,peak,freq,slideTo,q} }  // noise "consonant" burst */
   function vox(t0, opts) {
     const o = opts || {};
     const dur = o.dur || 0.4;
@@ -326,11 +332,13 @@
     const formants = o.formants || [700, 1200, 2600];
     const q = o.q || 8;
     const detune = o.detune || [0];
+    const atk = o.attack != null ? o.attack : Math.min(0.03, dur * 0.18);
+    const rel = o.release != null ? o.release : dur;
 
     const out = ctx().createGain();
     out.gain.setValueAtTime(0.0001, t0);
-    out.gain.exponentialRampToValueAtTime(peak, t0 + Math.min(0.03, dur * 0.18));
-    out.gain.setValueAtTime(peak, t0 + dur * 0.6);
+    out.gain.exponentialRampToValueAtTime(peak, t0 + atk);
+    out.gain.setValueAtTime(peak, t0 + Math.min(rel, dur * 0.6));
     out.gain.exponentialRampToValueAtTime(0.0001, t0 + dur);
     out.connect(ctx().destination);
 
@@ -340,6 +348,15 @@
       lg.gain.value = o.tremolo.depth * peak;
       lfo.connect(lg); lg.connect(out.gain);
       lfo.start(t0); lfo.stop(t0 + dur + 0.05);
+    }
+
+    // Optional breath/consonant noise burst (the "w" in woof, the puff in a roar)
+    if (o.breath) {
+      const b = o.breath;
+      noiseHit(t0 + (b.at || 0), b.dur || 0.08, {
+        peak: b.peak != null ? b.peak : peak * 0.4,
+        type: "bandpass", freq: b.freq || 1200, slideTo: b.slideTo || null,
+      });
     }
 
     const sources = [];
@@ -361,7 +378,14 @@
 
     formants.forEach((ff, idx) => {
       const bp = ctx().createBiquadFilter();
-      bp.type = "bandpass"; bp.frequency.value = ff; bp.Q.value = q;
+      bp.type = "bandpass"; bp.Q.value = q;
+      if (Array.isArray(ff)) {
+        // formant trajectory: glide the resonance to morph the vowel over time
+        bp.frequency.setValueAtTime(ff[0][1], t0);
+        ff.forEach(([ft, fHz]) => bp.frequency.linearRampToValueAtTime(fHz, t0 + ft));
+      } else {
+        bp.frequency.value = ff;
+      }
       const fg = ctx().createGain(); fg.gain.value = 1 / (idx * 0.6 + 1);
       sources.forEach((osc) => osc.connect(bp));
       bp.connect(fg); fg.connect(out);
@@ -377,48 +401,62 @@
     ding:   (t) => { tone(1047, t, 0.7, { type: "sine", peak: 0.18 }); tone(1568, t, 0.7, { type: "sine", peak: 0.08 }); tone(2093, t + 0.02, 0.5, { type: "sine", peak: 0.05 }); },
     // ---- Animal voices use the formant synth (vox) for a natural timbre ----
     woof:   (t) => {
-      // two gruff barks: quick pitch drop through low/mid formants
-      vox(t, { dur: 0.16, peak: 0.22, type: "sawtooth", q: 6, detune: [-7, 7],
-               pitch: [[0, 320], [0.04, 430], [0.16, 150]], formants: [400, 900, 1700] });
-      vox(t + 0.22, { dur: 0.18, peak: 0.2, type: "sawtooth", q: 6, detune: [-7, 7],
-               pitch: [[0, 300], [0.04, 410], [0.18, 140]], formants: [380, 850, 1600] });
+      // two barks; each starts with a "w" breath puff then an "oof" vowel that
+      // glides its formants closed (1st formant falls, 2nd rises a touch)
+      vox(t, { dur: 0.2, peak: 0.22, type: "sawtooth", q: 7, detune: [-6, 6],
+               attack: 0.012, breath: { at: 0, dur: 0.05, peak: 0.09, freq: 1400, slideTo: 600 },
+               pitch: [[0, 300], [0.05, 440], [0.2, 150]],
+               formants: [[[0, 560], [0.2, 320]], [[0, 1100], [0.2, 850]], 2200] });
+      vox(t + 0.26, { dur: 0.22, peak: 0.2, type: "sawtooth", q: 7, detune: [-6, 6],
+               attack: 0.012, breath: { at: 0, dur: 0.05, peak: 0.08, freq: 1300, slideTo: 550 },
+               pitch: [[0, 280], [0.05, 410], [0.22, 135]],
+               formants: [[[0, 540], [0.22, 300]], [[0, 1050], [0.22, 820]], 2100] });
     },
     meow:   (t) => {
-      // rising "mee" gliding into falling "ow" — moving formants do the vowel
-      vox(t, { dur: 0.55, peak: 0.2, type: "sawtooth", q: 9, vibrato: { rate: 14, depth: 12 },
-               pitch: [[0, 520], [0.18, 760], [0.32, 700], [0.55, 430]],
-               formants: [760, 1500, 2700] });
+      // "mee" (high front: F1 low, F2 high) gliding to "ow" (F1 up, F2 down)
+      vox(t, { dur: 0.6, peak: 0.2, type: "sawtooth", q: 10, vibrato: { rate: 13, depth: 10 },
+               attack: 0.02,
+               pitch: [[0, 480], [0.16, 780], [0.34, 720], [0.6, 400]],
+               formants: [[[0, 420], [0.2, 650], [0.6, 800]],
+                          [[0, 2600], [0.2, 1800], [0.6, 1150]],
+                          2900] });
     },
-    moo:    (t) => vox(t, { dur: 0.75, peak: 0.22, type: "sawtooth", q: 7,
-               vibrato: { rate: 6, depth: 8 }, tremolo: { rate: 7, depth: 0.25 },
-               pitch: [[0, 190], [0.15, 250], [0.55, 235], [0.75, 150]],
-               formants: [350, 700, 1900] }),
+    moo:    (t) => vox(t, { dur: 0.8, peak: 0.22, type: "sawtooth", q: 7,
+               vibrato: { rate: 6, depth: 8 }, tremolo: { rate: 6.5, depth: 0.22 },
+               pitch: [[0, 180], [0.18, 250], [0.6, 235], [0.8, 140]],
+               formants: [[[0, 300], [0.3, 420], [0.8, 330]], 720, 1900] }),
     neigh:  (t) => {
-      // descending whinny with fast flutter
-      vox(t, { dur: 0.5, peak: 0.2, type: "sawtooth", q: 8,
-               vibrato: { rate: 32, depth: 55 }, tremolo: { rate: 26, depth: 0.5 },
-               pitch: [[0, 700], [0.1, 760], [0.5, 320]], formants: [650, 1700, 3000] });
-      noiseHit(t + 0.42, 0.18, { peak: 0.05, type: "bandpass", freq: 900 });
+      // whinny: bright open onset, fast flutter, descending into a softer tail
+      vox(t, { dur: 0.6, peak: 0.2, type: "sawtooth", q: 8,
+               vibrato: { rate: 34, depth: 60 }, tremolo: { rate: 28, depth: 0.55 },
+               pitch: [[0, 660], [0.08, 780], [0.6, 280]],
+               formants: [[[0, 750], [0.6, 500]], [[0, 1900], [0.6, 1400]], 3000] });
+      noiseHit(t + 0.5, 0.2, { peak: 0.05, type: "bandpass", freq: 800, slideTo: 400 });
     },
     roar:   (t) => {
-      // big cat: low rumble swelling through wide formants + breath noise
-      vox(t, { dur: 0.75, peak: 0.24, type: "sawtooth", q: 4, detune: [-10, 0, 10],
-               vibrato: { rate: 24, depth: 22 },
-               pitch: [[0, 150], [0.15, 230], [0.5, 210], [0.75, 110]],
-               formants: [320, 700, 1300, 2400] });
-      noiseHit(t, 0.75, { peak: 0.07, type: "bandpass", freq: 700, slideTo: 250 });
+      // big cat: noisy breath onset, low rumble swelling through wide open
+      // formants, then trailing off — detuned stack for a rough, chesty body
+      vox(t, { dur: 0.85, peak: 0.24, type: "sawtooth", q: 4, detune: [-12, 0, 12],
+               vibrato: { rate: 26, depth: 24 }, attack: 0.06,
+               breath: { at: 0, dur: 0.18, peak: 0.09, freq: 900, slideTo: 300 },
+               pitch: [[0, 140], [0.18, 240], [0.55, 215], [0.85, 95]],
+               formants: [[[0, 350], [0.3, 600], [0.85, 380]],
+                          [[0, 900], [0.4, 1200], [0.85, 800]], 2400] });
+      noiseHit(t + 0.1, 0.75, { peak: 0.05, type: "bandpass", freq: 600, slideTo: 220 });
     },
     growl:  (t) => {
-      vox(t, { dur: 0.55, peak: 0.2, type: "sawtooth", q: 5, detune: [-8, 8],
-               vibrato: { rate: 30, depth: 18 },
-               pitch: [[0, 130], [0.5, 90], [0.55, 80]], formants: [250, 600, 1400] });
-      noiseHit(t, 0.55, { peak: 0.05, type: "bandpass", freq: 450 });
+      vox(t, { dur: 0.6, peak: 0.2, type: "sawtooth", q: 5, detune: [-9, 9],
+               vibrato: { rate: 34, depth: 20 },
+               pitch: [[0, 125], [0.5, 95], [0.6, 80]],
+               formants: [[[0, 260], [0.6, 200]], 600, 1400] });
+      noiseHit(t, 0.6, { peak: 0.05, type: "bandpass", freq: 420 });
     },
     chirp:  (t) => [0, 1, 2, 3].forEach((i) =>
                tone(2400 + i * 150, t + i * 0.085, 0.07, { type: "sine", peak: 0.12, slideTo: 3100 + i * 150 })),
-    hoot:   (t) => [0, 0.28].forEach((d) =>
-               vox(t + d, { dur: 0.22, peak: 0.16, type: "sine", q: 12,
-                 pitch: [[0, 360], [0.06, 420], [0.22, 360]], formants: [420, 900] })),
+    hoot:   (t) => [0, 0.3].forEach((d) =>
+               vox(t + d, { dur: 0.26, peak: 0.16, type: "sine", q: 14, attack: 0.05, release: 0.16,
+                 pitch: [[0, 340], [0.08, 400], [0.26, 350]],
+                 formants: [[[0, 380], [0.26, 440]], 760] })),
     engine: (t) => { tone(70, t, 0.55, { type: "sawtooth", peak: 0.16, vibrato: { rate: 14, depth: 8 } }); tone(105, t, 0.55, { type: "square", peak: 0.06, vibrato: { rate: 14, depth: 6 } }); },
     honk:   (t) => { tone(330, t, 0.18, { type: "square", peak: 0.16 }); tone(440, t + 0.16, 0.22, { type: "square", peak: 0.16 }); },
     siren:  (t) => { tone(700, t, 0.25, { type: "sawtooth", peak: 0.12, slideTo: 1100 }); tone(1100, t + 0.25, 0.25, { type: "sawtooth", peak: 0.12, slideTo: 700 }); },
