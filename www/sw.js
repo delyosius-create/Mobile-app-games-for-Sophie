@@ -1,5 +1,5 @@
 /* Simple offline cache so the game works without internet. */
-const CACHE = "unicorn-match-v7";
+const CACHE = "unicorn-match-v8";
 const ASSETS = [
   "./",
   "./index.html",
@@ -8,12 +8,6 @@ const ASSETS = [
   "./manifest.webmanifest",
   "./icons/icon-192.png",
   "./icons/icon-512.png",
-  "./sounds/dog-bark.wav",
-  "./sounds/cat-meow.wav",
-  "./sounds/cow-moo.wav",
-  "./sounds/birds-chirping.wav",
-  "./sounds/water-drop.wav",
-  "./sounds/wave-crash.wav",
 ];
 
 self.addEventListener("install", (e) => {

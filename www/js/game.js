@@ -169,7 +169,7 @@
         { emoji: "🦦", name: "Otter",       sound: "chirp" },
         { emoji: "⚓", name: "Anchor",      sound: "ding" },
         { emoji: "🏝️", name: "Island",      sound: "rustle" },
-        { emoji: "🌊", name: "Wave",        sound: "waves" },
+        { emoji: "🌊", name: "Wave",        sound: "splash" },
         { emoji: "🐊", name: "Crocodile",   sound: "growl" },
         { emoji: "🪸", name: "Coral",       sound: "pop" },
         { emoji: "🐧", name: "Penguin",     sound: "chirp" },
@@ -345,17 +345,10 @@
     try { (VOICES[name] || VOICES.default)(ctx().currentTime); } catch (_) { /* ignore */ }
   }
 
-  /* Real recorded clips (CC0, from freesound.org via github.com/deltabrot/
-   * sound-effects) used in place of synth where a good recording exists.
-   * Anything without a clip falls back to the synth voice above. */
-  const CLIPS = {
-    woof:   "sounds/dog-bark.wav",
-    meow:   "sounds/cat-meow.wav",
-    moo:    "sounds/cow-moo.wav",
-    chirp:  "sounds/birds-chirping.wav",
-    splash: "sounds/water-drop.wav",
-    waves:  "sounds/wave-crash.wav",
-  };
+  /* Optional real recorded clips per sound-profile. Empty for now; when audio
+   * files are added under www/sounds/ they get wired up here and cached by the
+   * service worker. Anything without a clip uses the synth voice above. */
+  const CLIPS = {};
   const audioCache = {};
   function playClip(url, opt) {
     const { volume = 0.6, maxMs = 1500 } = opt || {};
