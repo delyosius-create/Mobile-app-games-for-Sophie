@@ -5,6 +5,7 @@
   "description": "A magical unicorn & fairy-tale card matching game for two players.",
   "scripts": {
     "serve": "python3 -m http.server 8000 --directory www",
+    "serve:pi": "python3 server/serve.py",
     "add:android": "cap add android",
     "sync": "cap sync android",
     "build:apk": "cap sync android && cd android && ./gradlew assembleDebug"

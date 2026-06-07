@@ -1,0 +1,19 @@
+[Unit]
+# systemd service so the game server starts automatically on every boot.
+# Installed for you by install-on-pi.sh — you normally don't edit this by hand.
+Description=Unicorn Match game server (home WiFi)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+# __INSTALL_DIR__ and __USER__ are filled in by install-on-pi.sh.
+User=__USER__
+WorkingDirectory=__INSTALL_DIR__/server
+Environment=PORT=8080
+ExecStart=/usr/bin/python3 __INSTALL_DIR__/server/serve.py
+Restart=on-failure
+RestartSec=3
+
+[Install]
+WantedBy=multi-user.target
