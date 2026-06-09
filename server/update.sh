@@ -12,10 +12,17 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 INSTALL_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
 cd "$INSTALL_DIR"
 
+BRANCH="claude/fantasy-card-matching-game-ezd0m"
+
 echo "  → Fetching the latest game..."
-git pull --ff-only
+git fetch origin "$BRANCH"
+git checkout "$BRANCH" 2>/dev/null || true
+git pull --ff-only origin "$BRANCH"
 
 echo "  → Restarting the server..."
-sudo systemctl restart unicorn-match
-
-echo "  ✅ Updated. The newest version is now live on your WiFi."
+if sudo systemctl restart unicorn-match 2>/dev/null; then
+  echo "  ✅ Updated. The newest version is now live on your WiFi."
+else
+  echo "  ⚠ Couldn't restart the service — is it installed yet?"
+  echo "    First-time setup:  bash server/install-on-pi.sh"
+fi

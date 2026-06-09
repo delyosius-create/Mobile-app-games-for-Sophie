@@ -7,11 +7,11 @@ Wants=network-online.target
 
 [Service]
 Type=simple
-# __INSTALL_DIR__ and __USER__ are filled in by install-on-pi.sh.
+# __INSTALL_DIR__, __USER__ and __PYTHON__ are filled in by install-on-pi.sh.
 User=__USER__
 WorkingDirectory=__INSTALL_DIR__/server
 Environment=PORT=8080
-ExecStart=/usr/bin/python3 __INSTALL_DIR__/server/serve.py
+ExecStart=__PYTHON__ __INSTALL_DIR__/server/serve.py
 Restart=on-failure
 RestartSec=3
 
